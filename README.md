@@ -3,6 +3,9 @@
 This project is extended version of the [Rob Hedgpeth's tutorial](https://dev.to/probablyrealrob/getting-started-with-mariadb-using-docker-and-node-js-3djg)  
 
 ## How to start
+**0. Install dependency:**  
+In project root folder, do `npm install`
+
 **1. Create a docker network:**  
 `docker network create -d bridge testnw`
 
