@@ -1,0 +1,26 @@
+version: '3.5'
+services:
+  mariadb:
+    container_name: mymaria
+    image: mariadb:10.3
+    ports:
+      - "3306:3306"
+    environment: 
+      MYSQL_ROOT_PASSWORD: "pass"
+    networks:
+      - testnw
+  
+  nodejs:
+    container_name: node-api
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    networks:
+      - testnw
+    depends_on: 
+      - mariadb
+    
+networks:
+  testnw:
+    name: custom_testnw
