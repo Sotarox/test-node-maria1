@@ -3,20 +3,13 @@
 This project is extended from [Rob Hedgpeth's tutorial](https://dev.to/probablyrealrob/getting-started-with-mariadb-using-docker-and-node-js-3djg)  
 
 ## Start containers by Docker compose
-In project root folder, do `docker compose up`
+In project root folder, do `docker compose up`  
+Then nodejs container(port8080) and mariadb container(port3306) starts running.  
+MariaDB is populated automatically with `demo` database and `people` table. 
 
-After containers started, log in mariadb:  
-`mysql -h localhost -P 3306 --protocol=TCP -u root -ppass`  
-
-After loggin in, populate db:  
-```
-CREATE DATABASE demo;
-CREATE TABLE demo.people (name VARCHAR(50));
-INSERT INTO demo.people VALUES ('rob'), ('tracy'), ('sam'), ('duke');
-```
-
-Check if db is accessible by curl:  
+Check if MariaDB is accessible from nodejs:  
 `curl http://localhost:8080/people`  
+
 if connection is correct, the following is displayed:  
 ```
 [{"name":"rob"},{"name":"tracy"},{"name":"sam"},{"name":"duke"}]
@@ -48,9 +41,22 @@ INSERT INTO demo.people VALUES ('rob'), ('tracy'), ('sam'), ('duke');
 ```
 
 **3. Run NodeJS container:**  
+Correct `db.js` in this project. You find connection info:  
+```
+const pool = mariadb.createPool({
+//   host: "127.0.0.1",
+  host: "mymaria", // container name
+```
+Change Ip address so:
+```
+const pool = mariadb.createPool({
+  host: "127.0.0.1",
+  // host: "mymaria", // container name
+});
+```
+
 Go to the project root folder:  
-`cd path_of_repo/test_node_maria`
-> path_of_repo is different in you computer. For example /Users/JohnDoe/repo/test_node_maria
+`cd path_in_your_pc/test_node_maria1`
 
 Build container:  
 `docker build -t oct19:1.0 .`  
@@ -60,20 +66,3 @@ Run container on the test network:
 
 Check if db is accessible by curl:  
 `curl http://localhost:8080/people`  
-
---- 
-## Tipps
-See `db.js` in this project. You find connection info:  
-```
-const pool = mariadb.createPool({
-//   host: "127.0.0.1",
-  host: "mymaria", // container name
-  port: 3306, 
-  user: "root", 
-  password: "pass",
-  database: "demo",
-  connectionLimit: 5
-});
-```
-The only difference to original tutorial is only `host: "mymaria"`. 
-This is the container name which you gave when running MariaDB container.  
